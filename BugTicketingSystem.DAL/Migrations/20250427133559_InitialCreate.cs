@@ -32,6 +32,8 @@ namespace BugTicketingSystem.DAL.Migrations
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Salary = table.Column<decimal>(type: "decimal(8,2)", nullable: true),
                     Age = table.Column<int>(type: "int", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Role = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -77,24 +79,24 @@ namespace BugTicketingSystem.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BugUser",
+                name: "UserBugs",
                 columns: table => new
                 {
-                    BugsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UsersId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BugId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BugUser", x => new { x.BugsId, x.UsersId });
+                    table.PrimaryKey("PK_UserBugs", x => new { x.UserId, x.BugId });
                     table.ForeignKey(
-                        name: "FK_BugUser_Bugs_BugsId",
-                        column: x => x.BugsId,
+                        name: "FK_UserBugs_Bugs_BugId",
+                        column: x => x.BugId,
                         principalTable: "Bugs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BugUser_Users_UsersId",
-                        column: x => x.UsersId,
+                        name: "FK_UserBugs_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -111,9 +113,9 @@ namespace BugTicketingSystem.DAL.Migrations
                 column: "ProjectID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BugUser_UsersId",
-                table: "BugUser",
-                column: "UsersId");
+                name: "IX_UserBugs_BugId",
+                table: "UserBugs",
+                column: "BugId");
         }
 
         /// <inheritdoc />
@@ -123,7 +125,7 @@ namespace BugTicketingSystem.DAL.Migrations
                 name: "Attachments");
 
             migrationBuilder.DropTable(
-                name: "BugUser");
+                name: "UserBugs");
 
             migrationBuilder.DropTable(
                 name: "Bugs");

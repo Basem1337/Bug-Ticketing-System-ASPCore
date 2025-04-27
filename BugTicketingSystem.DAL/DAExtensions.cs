@@ -26,6 +26,8 @@ namespace BugTicketingSystem.DAL
                                 Id = Guid.NewGuid(),
                                 Name = "Marina Mansour",
                                 Salary = 25000,
+                                Email = "marina.mansour@gmail.com",
+                                Password = "012345678",
                                 Age = 23,
                                 Role = UserRole.Developer
                             },
@@ -34,6 +36,8 @@ namespace BugTicketingSystem.DAL
                                 Id = Guid.NewGuid(),
                                 Name = "Basem Mohamed",
                                 Salary = 22000,
+                                Email = "basem.m1337@gmail.com",
+                                Password = "012345678",
                                 Age = 23,
                                 Role = UserRole.Developer
                             },
@@ -42,6 +46,8 @@ namespace BugTicketingSystem.DAL
                                 Id = Guid.NewGuid(),
                                 Name = "Kholoud Ahmed",
                                 Salary = 23000,
+                                Email = "lilksaby@gmail.com",
+                                Password = "012345678",
                                 Age = 21,
                                 Role = UserRole.Tester
                             },
@@ -50,6 +56,8 @@ namespace BugTicketingSystem.DAL
                                 Id = Guid.NewGuid(),
                                 Name = "Hany Abdou",
                                 Salary = 25000,
+                                Email = "hanyabdoustd@gmail.com",
+                                Password = "012345678",
                                 Age = 25,
                                 Role = UserRole.Tester
                             },
@@ -58,6 +66,8 @@ namespace BugTicketingSystem.DAL
                                 Id = Guid.NewGuid(),
                                 Name = "Mohamed Hatem",
                                 Salary = 30000,
+                                Email = "m.hatem@gmail.com",
+                                Password = "012345678",
                                 Age = 27,
                                 Role = UserRole.Manager
                             },
@@ -136,6 +146,25 @@ namespace BugTicketingSystem.DAL
                             },
                         };
 
+                        var userBugs = new List<UserBug>
+                        {
+                            new()
+                            {
+                                UserId = users[0].Id,
+                                BugId = bugs[2].Id
+                            },
+                            new()
+                            {
+                                UserId = users[1].Id,
+                                BugId = bugs[3].Id
+                            },
+                            new()
+                            {
+                                UserId = users[3].Id,
+                                BugId = bugs[2].Id
+                            },
+                        };
+
                         var atts = new List<Attachment>
                         {
                             new()
@@ -164,6 +193,7 @@ namespace BugTicketingSystem.DAL
                         context.AddRange(projects);
                         context.AddRange(bugs);
                         context.AddRange(atts);
+                        context.AddRange(userBugs);
 
                         context.SaveChanges();
                     }));

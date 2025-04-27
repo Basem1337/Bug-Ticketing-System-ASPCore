@@ -18,6 +18,7 @@ namespace BugTicketingSystem.DAL
         public DbSet<Bug> Bugs => Set<Bug>();
         public DbSet<Project> Projects => Set<Project>();
         public DbSet<Attachment> Attachments => Set<Attachment>();
+        public DbSet<UserBug> UserBugs => Set<UserBug>();
 
     }
 }

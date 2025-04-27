@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Bug_Tecketing_System</RootNamespace>
+    <UserSecretsId>48aaa6f1-b3a7-4821-bba7-27ae51e839bf</UserSecretsId>
   </PropertyGroup>
 
 	<ItemGroup>

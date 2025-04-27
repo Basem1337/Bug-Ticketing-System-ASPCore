@@ -94,10 +94,18 @@ namespace BugTicketingSystem.DAL.Migrations
                     b.Property<int?>("Age")
                         .HasColumnType("int");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Role")
                         .HasColumnType("int");
@@ -110,19 +118,19 @@ namespace BugTicketingSystem.DAL.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("BugUser", b =>
+            modelBuilder.Entity("BugTicketingSystem.DAL.UserBug", b =>
                 {
-                    b.Property<Guid>("BugsId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("UsersId")
+                    b.Property<Guid>("BugId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("BugsId", "UsersId");
+                    b.HasKey("UserId", "BugId");
 
-                    b.HasIndex("UsersId");
+                    b.HasIndex("BugId");
 
-                    b.ToTable("BugUser");
+                    b.ToTable("UserBugs");
                 });
 
             modelBuilder.Entity("BugTicketingSystem.DAL.Attachment", b =>
@@ -143,29 +151,40 @@ namespace BugTicketingSystem.DAL.Migrations
                     b.Navigation("Projects");
                 });
 
-            modelBuilder.Entity("BugUser", b =>
+            modelBuilder.Entity("BugTicketingSystem.DAL.UserBug", b =>
                 {
-                    b.HasOne("BugTicketingSystem.DAL.Bug", null)
-                        .WithMany()
-                        .HasForeignKey("BugsId")
+                    b.HasOne("BugTicketingSystem.DAL.Bug", "Bug")
+                        .WithMany("UserBugs")
+                        .HasForeignKey("BugId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BugTicketingSystem.DAL.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
+                    b.HasOne("BugTicketingSystem.DAL.User", "User")
+                        .WithMany("UserBugs")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Bug");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BugTicketingSystem.DAL.Bug", b =>
                 {
                     b.Navigation("Attachments");
+
+                    b.Navigation("UserBugs");
                 });
 
             modelBuilder.Entity("BugTicketingSystem.DAL.Project", b =>
                 {
                     b.Navigation("Bugs");
+                });
+
+            modelBuilder.Entity("BugTicketingSystem.DAL.User", b =>
+                {
+                    b.Navigation("UserBugs");
                 });
 #pragma warning restore 612, 618
         }
