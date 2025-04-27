@@ -8,7 +8,7 @@ namespace BugTicketingSystem.DAL
         public void Configure(EntityTypeBuilder<Bug> builder)
         {
             builder.Property(u => u.Name).HasMaxLength(255).IsRequired();
-            builder.Property(u => u.Risk).IsRequired();
+            builder.Property(u => u.Risk).IsRequired().HasConversion<string>();
             builder
             .HasOne(b => b.Projects)
             .WithMany(p => p.Bugs)

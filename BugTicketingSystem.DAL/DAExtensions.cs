@@ -197,9 +197,12 @@ namespace BugTicketingSystem.DAL
 
                         context.SaveChanges();
                     }));
-            //services.AddScoped<IInstructorRepository, InstructorRepository>();
-            //services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-            //services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IBugRepository, BugRepository>();
+            services.AddScoped<IProjectRepository, ProjectRepository>();
+            services.AddScoped<IAttachmentRepository, AttachmentRepository>();
+            services.AddScoped<IUserBugRepository, UserBugRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
     }
 }

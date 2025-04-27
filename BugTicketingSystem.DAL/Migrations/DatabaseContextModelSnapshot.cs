@@ -56,8 +56,9 @@ namespace BugTicketingSystem.DAL.Migrations
                     b.Property<Guid?>("ProjectID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Risk")
-                        .HasColumnType("int");
+                    b.Property<string>("Risk")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -77,8 +78,9 @@ namespace BugTicketingSystem.DAL.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -107,8 +109,9 @@ namespace BugTicketingSystem.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Role")
-                        .HasColumnType("int");
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("Salary")
                         .HasColumnType("decimal(8,2)");

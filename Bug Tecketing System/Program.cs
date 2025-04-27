@@ -1,4 +1,5 @@
 
+using BugTicketingSystem.BL;
 using BugTicketingSystem.DAL;
 
 namespace Bug_Tecketing_System
@@ -15,7 +16,7 @@ namespace Bug_Tecketing_System
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
-            //builder.Services.AddBusinessServices();
+            builder.Services.AddBusinessServices();
 
             builder.Services.AddDAServices(builder.Configuration);
 

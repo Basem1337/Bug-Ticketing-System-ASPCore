@@ -15,7 +15,7 @@ namespace BugTicketingSystem.DAL
             builder.Property(u => u.Salary).HasColumnType("decimal(8,2)");
             builder.Property(u => u.Age).HasColumnType("int");
             builder.Property(u => u.Name).HasMaxLength(255).IsRequired();
-            builder.Property(u => u.Role).IsRequired();
+            builder.Property(u => u.Role).IsRequired().HasConversion<string>();
             //builder
             //.HasMany(u => u.Bugs)
             //.WithMany(b => b.Users);

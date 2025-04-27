@@ -8,7 +8,7 @@ namespace BugTicketingSystem.DAL
         public void Configure(EntityTypeBuilder<Project> builder)
         {
             builder.Property(p => p.Name).HasMaxLength(255).IsRequired();
-            builder.Property(p => p.Status).IsRequired();
+            builder.Property(p => p.Status).IsRequired().HasConversion<string>();
         }
     }
 }
