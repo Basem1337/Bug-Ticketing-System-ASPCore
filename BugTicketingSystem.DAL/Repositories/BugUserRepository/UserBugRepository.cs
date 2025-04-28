@@ -8,5 +8,10 @@
         {
             _ctx = ctx;
         }
+
+        public async Task<UserBug?> getByCompositeIdAsync(Guid userId, Guid bugId)
+        {
+            return await _ctx.Set<UserBug>().FindAsync(userId, bugId);
+        }
     }
 }

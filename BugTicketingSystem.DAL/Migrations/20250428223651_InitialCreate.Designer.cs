@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BugTicketingSystem.DAL.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20250427213147_InitialCreate")]
+    [Migration("20250428223651_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -34,7 +34,15 @@ namespace BugTicketingSystem.DAL.Migrations
                     b.Property<Guid?>("BugID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ImgLink")
+                    b.Property<string>("FileUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

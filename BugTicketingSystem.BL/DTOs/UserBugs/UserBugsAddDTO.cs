@@ -6,7 +6,7 @@ namespace BugTicketingSystem.BL
     {
 
         public Guid UserId { get; set; }
-        public Guid BugId { get; set; }
+        //public Guid BugId { get; set; }
 
     }
 }

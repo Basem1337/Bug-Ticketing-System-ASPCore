@@ -12,14 +12,49 @@ namespace BugTicketingSystem.BL
             _unitOfWork = unitOfWork;
         }
 
-        public Task<GeneralResult> AddAsync(UserBugsAddDTO userBugDTO)
+        public async Task<GeneralResult> AddAsync(Guid bugId,UserBugsAddDTO userBugDTO)
         {
-            throw new NotImplementedException();
+            var newUserBug = new UserBug()
+            {
+                BugId = bugId,
+                UserId = userBugDTO.UserId,
+            };
+
+            _unitOfWork.UserBugRepository.Add(newUserBug);
+            await _unitOfWork.SaveChangesAsync();
+
+            return new GeneralResult
+            {
+                Success = true,
+                Errors = []
+            };
         }
 
-        public Task DeleteAsync(UserBug userBugDTO)
+        public async Task<GeneralResult> DeleteAsync(Guid userId, Guid bugId)
         {
-            throw new NotImplementedException();
+            var delUser = await _unitOfWork.UserBugRepository.getByCompositeIdAsync(userId, bugId);
+            if (delUser != null)
+            {
+                _unitOfWork.UserBugRepository.Delete(delUser);
+                await _unitOfWork.SaveChangesAsync();
+            }
+
+            return new GeneralResult
+            {
+                Success = true,
+                Errors = []
+            };
+        }
+
+        public async Task<List<UserBugReadDTO>> GetAllAsync()
+        {
+            var getUsers = await _unitOfWork.UserBugRepository.getAllAsync();
+
+            return getUsers.Select(u => new UserBugReadDTO
+            {
+                UserId = u.UserId,
+                BugId = u.BugId,
+            }).ToList();
         }
     }
 }

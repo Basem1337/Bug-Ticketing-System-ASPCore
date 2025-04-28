@@ -7,7 +7,9 @@ namespace BugTicketingSystem.DAL
     {
         public void Configure(EntityTypeBuilder<Attachment> builder)
         {
-            builder.Property(a => a.ImgLink).IsRequired();
+            //builder.Property(a => a.ImgLink).IsRequired();
+            builder.Property(a => a.FileUrl).IsRequired();
+            builder.Property(a => a.Type).IsRequired();
             builder
             .HasOne(a => a.Bugs)
             .WithMany(b => b.Attachments)

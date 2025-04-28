@@ -10,4 +10,14 @@
     <ProjectReference Include="..\BugTicketingSystem.DAL\BugTicketingSystem.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Validators\Bug\" />
+    <Folder Include="Validators\UserBugs\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.11.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
+  </ItemGroup>
+
 </Project>

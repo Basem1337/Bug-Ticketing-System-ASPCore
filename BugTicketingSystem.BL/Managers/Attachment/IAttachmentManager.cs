@@ -5,8 +5,9 @@ namespace BugTicketingSystem.BL
 {
     public interface IAttachmentManager
     {
-        Task<List<AttachmentReadDTO>> GetAllAsync();
-        Task<GeneralResult> AddAsync(AttachmentAddDTO attDTO);
-        Task DeleteAsync(Attachment attDTO);
+        Task<GeneralResult> AddAsync(Guid bugId, AttachmentAddDTO attDTO);
+        Task<GeneralResult> DeleteAsync(Guid bugId, Guid attId);
+
+        Task<GeneralResult> GetAttachmentsByBugIdAsync(Guid bugId);
     }
 }

@@ -5,7 +5,8 @@ namespace BugTicketingSystem.BL
 {
     public interface IUserBugManager
     {
-        Task<GeneralResult> AddAsync(UserBugsAddDTO userBugDTO);
-        Task DeleteAsync(UserBug userBugDTO);
+        Task<List<UserBugReadDTO>> GetAllAsync();
+        Task<GeneralResult> AddAsync(Guid bugId, UserBugsAddDTO userBugDTO);
+        Task<GeneralResult> DeleteAsync(Guid userId,Guid bugId);
     }
 }

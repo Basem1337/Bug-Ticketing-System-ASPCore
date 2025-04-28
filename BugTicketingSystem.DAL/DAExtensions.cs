@@ -165,24 +165,52 @@ namespace BugTicketingSystem.DAL
                             },
                         };
 
+                        //var atts = new List<Attachment>
+                        //{
+                        //    new()
+                        //    {
+                        //        Id = Guid.NewGuid(),
+                        //        ImgLink = "No Attachment",
+                        //        BugID = bugs[0].Id
+                        //    },
+                        //    new()
+                        //    {
+                        //        Id = Guid.NewGuid(),
+                        //        ImgLink = "No Attachment",
+                        //        BugID = bugs[1].Id
+                        //    },
+                        //    new()
+                        //    {
+                        //        Id = Guid.NewGuid(),
+                        //        ImgLink = "No Attachment",
+                        //        BugID = bugs[2].Id
+                        //    },
+                        //};
+
                         var atts = new List<Attachment>
                         {
                             new()
                             {
                                 Id = Guid.NewGuid(),
-                                ImgLink = "No Attachment",
+                                Name = "None",
+                                Type = "None",
+                                FileUrl = "No Attachment",
                                 BugID = bugs[0].Id
                             },
                             new()
                             {
                                 Id = Guid.NewGuid(),
-                                ImgLink = "No Attachment",
+                                Name = "None",
+                                Type = "None",
+                                FileUrl = "No Attachment",
                                 BugID = bugs[1].Id
                             },
                             new()
                             {
                                 Id = Guid.NewGuid(),
-                                ImgLink = "No Attachment",
+                                Name = "None",
+                                Type = "None",
+                                FileUrl = "No Attachment",
                                 BugID = bugs[2].Id
                             },
                         };

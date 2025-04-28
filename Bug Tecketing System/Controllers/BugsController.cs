@@ -10,10 +10,14 @@ namespace Bug_Tecketing_System.Controllers
     public class BugsController : ControllerBase
     {
         private readonly IBugManager _bugManager;
+        private readonly IAttachmentManager _attachmentManager;
+        private readonly IUserBugManager _userBugManager;
 
-        public BugsController(IBugManager bugManager)
+        public BugsController(IBugManager bugManager,IAttachmentManager attachmentManager,IUserBugManager userBugManager)
         {
             _bugManager = bugManager;
+            _attachmentManager = attachmentManager;
+            _userBugManager = userBugManager;
         }
 
         [HttpGet]
@@ -48,5 +52,68 @@ namespace Bug_Tecketing_System.Controllers
             }
             return BadRequest(res);
         }
+
+        /*--------------[AttachmentRoutes]--------------*/
+
+        [HttpPost("{id}/attachments")]
+        public async Task<ActionResult> AddAttachment([FromRoute] Guid id, [FromForm] AttachmentAddDTO att)
+        {
+            var res = await _attachmentManager.AddAsync(id,att);
+            if (res.Success)
+            {
+                return Ok(res);
+            }
+            return BadRequest(res);
+        }
+
+        [HttpGet("{id}/attachments")]
+        public async Task<ActionResult> GetAttachment([FromRoute] Guid id)
+        {
+            var res = await _attachmentManager.GetAttachmentsByBugIdAsync(id);
+            if (res.Success)
+            {
+                return Ok(res);
+            }
+            return BadRequest(res);
+        }
+
+
+        [HttpDelete("{id}/attachments/{attId}")]
+        public async Task<ActionResult> DeleteAttachment([FromRoute] Guid id, [FromRoute] Guid attId)
+        {
+            var res = await _attachmentManager.DeleteAsync(id, attId);
+            if (res.Success)
+            {
+                return Ok(res);
+            }
+            return BadRequest(res);
+        }
+
+
+        /*--------------[Assignees(UserBugs)Routes]--------------*/
+
+        [HttpPost("{id}/assignees")]
+        public async Task<ActionResult> AddAssignees([FromRoute] Guid id, [FromBody] UserBugsAddDTO ubDTO)
+        {
+            var res = await _userBugManager.AddAsync(id,ubDTO);
+            if (res.Success)
+            {
+                return Ok(res);
+            }
+            return BadRequest(res);
+        }
+
+        [HttpDelete("{id}/assignees/{userId}")]
+        public async Task<ActionResult> DeleteAssignees([FromRoute] Guid id, [FromRoute] Guid userId)
+        {
+            var res = await _userBugManager.DeleteAsync(userId,id);
+            if (res.Success)
+            {
+                return Ok(res);
+            }
+            return BadRequest(res);
+        }
+
+
     }
 }

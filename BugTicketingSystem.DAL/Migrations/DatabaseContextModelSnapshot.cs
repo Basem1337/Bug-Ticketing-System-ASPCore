@@ -31,7 +31,15 @@ namespace BugTicketingSystem.DAL.Migrations
                     b.Property<Guid?>("BugID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ImgLink")
+                    b.Property<string>("FileUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

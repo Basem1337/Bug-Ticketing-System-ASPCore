@@ -1,6 +1,7 @@
 
 using BugTicketingSystem.BL;
 using BugTicketingSystem.DAL;
+using BugTrackingSystem.BL;
 
 namespace Bug_Tecketing_System
 {
@@ -19,6 +20,8 @@ namespace Bug_Tecketing_System
             builder.Services.AddBusinessServices();
 
             builder.Services.AddDAServices(builder.Configuration);
+
+            builder.Services.AddTransient<AttachmentUploadDtoValidator>();
 
             var app = builder.Build();
 

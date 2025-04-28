@@ -59,8 +59,12 @@ namespace BugTicketingSystem.BL
                 ProjectID = bug.ProjectID,
                 Attachments = bug.Attachments.Select(a => new AttachmentReadDTO
                 {
+                    //ImgLink = a.ImgLink
                     Id = a.Id,
-                    ImgLink = a.ImgLink
+                    Name = a.Name,
+                    FileUrl = a.FileUrl,
+                    FilePath = a.FileUrl,
+                    Type = a.Type
                 }).ToList() ?? new List<AttachmentReadDTO>()
             };
         }
