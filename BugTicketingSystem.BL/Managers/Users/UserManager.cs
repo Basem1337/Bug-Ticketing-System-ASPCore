@@ -11,11 +11,16 @@ namespace BugTicketingSystem.BL
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly RegisterDtoValidator _validationRules;
+        private readonly UpdateDtoValidator _userValidationRules;
+        private readonly ManagerUpdateDtoValidator _managerValidationRules;
 
-        public UserManager(IUnitOfWork unitOfWork, RegisterDtoValidator validationRules)
+        public UserManager(IUnitOfWork unitOfWork, RegisterDtoValidator validationRules,
+            UpdateDtoValidator userValidationRules, ManagerUpdateDtoValidator managerValidationRules)
         {
             _unitOfWork = unitOfWork;
             _validationRules = validationRules;
+            _userValidationRules = userValidationRules;
+            _managerValidationRules = managerValidationRules;
         }
         public async Task<GeneralResult> AddAsync(UserRegisterDTO userDTO)
         {
@@ -159,6 +164,20 @@ namespace BugTicketingSystem.BL
 
         public async Task<GeneralResult> ManagerUpdateAsync(UserManagerUpdateDTO userDTO)
         {
+            var validationResult = await _managerValidationRules.ValidateAsync(userDTO);
+            if (!(validationResult.IsValid))
+            {
+                return new GeneralResult
+                {
+                    Success = false,
+                    Errors = validationResult.Errors.Select(e => new ResultError
+                    {
+                        Code = e.ErrorCode,
+                        Msg = e.ErrorMessage
+                    }).ToArray()
+                };
+            }
+
             var updateUser = await _unitOfWork.UserRepository.getByIdAsync(userDTO.Id);
 
             if (updateUser is null)
@@ -191,19 +210,19 @@ namespace BugTicketingSystem.BL
 
         public async Task<GeneralResult> UpdateAsync(UserUpdateDTO userDTO)
         {
-            //var validationResult = await _validationRules.ValidateAsync(userDTO);
-            //if (!(validationResult.IsValid))
-            //{
-            //    return new GeneralResult
-            //    {
-            //        Success = false,
-            //        Errors = validationResult.Errors.Select(e => new ResultError
-            //        {
-            //            Code = e.ErrorCode,
-            //            Msg = e.ErrorMessage
-            //        }).ToArray()
-            //    };
-            //}
+            var validationResult = await _userValidationRules.ValidateAsync(userDTO);
+            if (!(validationResult.IsValid))
+            {
+                return new GeneralResult
+                {
+                    Success = false,
+                    Errors = validationResult.Errors.Select(e => new ResultError
+                    {
+                        Code = e.ErrorCode,
+                        Msg = e.ErrorMessage
+                    }).ToArray()
+                };
+            }
 
             var updateUser = await _unitOfWork.UserRepository.getByIdAsync(userDTO.Id);
 

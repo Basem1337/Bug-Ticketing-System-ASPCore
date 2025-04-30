@@ -28,18 +28,6 @@ public class LoginDtoValidator : AbstractValidator<User>
             .WithMessage("Password is required.")
             .MinimumLength(6)
             .WithMessage("Password must be at least 6 characters long.");
-            //.MustAsync(async (model, password, cancellationToken) =>
-            //{
-            //    var user = await _userManager.FindByEmailAsync(model.Email);
-            //    if (user == null)
-            //    {
-            //        return false;
-            //    }
-
-            //    var result = await _signInManager.CheckPasswordSignInAsync(user, password, false);
-            //    return result.Succeeded;
-            //})
-            //.WithMessage("Invalid password.");
 
     }
 }

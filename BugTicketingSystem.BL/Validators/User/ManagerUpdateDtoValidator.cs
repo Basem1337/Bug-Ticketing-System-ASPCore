@@ -5,10 +5,10 @@ using FluentValidation;
 
 namespace BugTrackingSystem.BL;
 
-public class RegisterDtoValidator : AbstractValidator<UserRegisterDTO>
+public class ManagerUpdateDtoValidator : AbstractValidator<UserManagerUpdateDTO>
 {
     private readonly IUnitOfWork _unitWork;
-    public RegisterDtoValidator(
+    public ManagerUpdateDtoValidator(
         IUnitOfWork unitWork
         )
     {
@@ -29,16 +29,15 @@ public class RegisterDtoValidator : AbstractValidator<UserRegisterDTO>
             .MustAsync(CheckEmailUniqueness)
             .WithMessage("Email already exists.")
             .When(x => !string.IsNullOrEmpty(x.Email));
-        RuleFor(x => x.Password)
-            .NotEmpty()
-            .WithMessage("Password is required.")
-            .MinimumLength(6)
-            .WithMessage("Password must be at least 6 characters long.");
+        RuleFor(x => x.Salary)
+            .GreaterThanOrEqualTo(5000)
+            .WithMessage("Salary must be more than or equal 5000!");
         RuleFor(x => x.Age)
             .GreaterThan(18)
             .WithMessage("Cannot be less than 18 years old.");
-
-
+        RuleFor(x => x.Role)
+            .IsInEnum()
+            .WithMessage("Role must be one of the predefined values: Manager, Developer, Tester.");
     }
 
     private async Task<bool> CheckEmailUniqueness(

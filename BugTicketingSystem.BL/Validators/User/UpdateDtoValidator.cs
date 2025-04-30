@@ -5,10 +5,10 @@ using FluentValidation;
 
 namespace BugTrackingSystem.BL;
 
-public class RegisterDtoValidator : AbstractValidator<UserRegisterDTO>
+public class UpdateDtoValidator : AbstractValidator<UserUpdateDTO>
 {
     private readonly IUnitOfWork _unitWork;
-    public RegisterDtoValidator(
+    public UpdateDtoValidator(
         IUnitOfWork unitWork
         )
     {
@@ -37,7 +37,6 @@ public class RegisterDtoValidator : AbstractValidator<UserRegisterDTO>
         RuleFor(x => x.Age)
             .GreaterThan(18)
             .WithMessage("Cannot be less than 18 years old.");
-
 
     }
 

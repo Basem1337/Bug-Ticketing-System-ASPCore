@@ -48,19 +48,25 @@ namespace BugTicketingSystem.BL
 
         public async Task<List<ProjectReadDTO>> GetAllAsync()
         {
-            var getPrjs = await _unitOfWork.ProjectRepository.getAllAsync();
+            var getPrjs = await _unitOfWork.ProjectRepository.GetAllWithBugsAsync();
 
             return getPrjs.Select(p => new ProjectReadDTO
             {
                 Id = p.Id,
                 Name = p.Name,
-                Status = p.Status
+                Status = p.Status,
+                Bugs = p.Bugs.Select(b => new BugReadDTO
+                {
+                    Id = b.Id,
+                    Name = b.Name,
+                    Risk = b.Risk,
+                }).ToList() ?? new List<BugReadDTO>()
             }).ToList();
         }
 
         public async Task<ProjectReadDTO?> GetProjectByIDAsync(Guid id)
         {
-            var prj = await _unitOfWork.ProjectRepository.getByIdAsync(id);
+            var prj = await _unitOfWork.ProjectRepository.GetByIdWithBugsAsync(id);
             if (prj is null)
             {
                 return null;

@@ -19,8 +19,8 @@ public class BugAddDtoValidator : AbstractValidator<BugAddDTO>
             .WithMessage("Project ID is required.");
 
         RuleFor(x => x.Risk)
-            .NotEmpty()
-            .WithMessage("Role name is required.")
+            .NotNull()
+            .WithMessage("Risk name is required.")
             //.Must(name => new[] { "Low", "Normal", "Medium", "High", "Critical"  }.Contains(name))
             .IsInEnum()
             .WithMessage("Invalid project status. Status must be either Not Started, In Progress, Cancelled, or Completed.");

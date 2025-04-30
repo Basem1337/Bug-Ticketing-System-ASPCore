@@ -55,12 +55,14 @@ namespace Bug_Tecketing_System.Controllers
         }
 
         [HttpPut("for-manager/{id}")]
+        [Authorize(Policy = Constants.Policies.ForManagerOnly)]
         public async Task<IActionResult> ManagerUpdate(Guid id, [FromBody] UserManagerUpdateDTO user)
         {
             if (id != user.Id)
             {
                 return BadRequest("User ID mismatch");
             }
+
             var res = await _userManager.ManagerUpdateAsync(user);
             if (res.Success)
             {
@@ -70,12 +72,24 @@ namespace Bug_Tecketing_System.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UserUpdate(Guid id, [FromBody] UserUpdateDTO user)
+        public async Task<ActionResult> UserUpdate(Guid id, [FromBody] UserUpdateDTO user)
         {
             if (id != user.Id)
             {
                 return BadRequest("User ID mismatch");
             }
+
+            var userClaims = HttpContext.User;
+
+            var userIdFromToken = userClaims.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var roleFromToken = userClaims.FindFirst(ClaimTypes.Role)?.Value;
+
+            Console.WriteLine($"User ID from Token: {userIdFromToken}");
+            Console.WriteLine($"Role from Token: {roleFromToken}");
+
+            if (userIdFromToken != user.Id.ToString())
+                return Unauthorized("Token does not match the user being updated.");
+
             var res = await _userManager.UpdateAsync(user);
             if (res.Success)
             {
