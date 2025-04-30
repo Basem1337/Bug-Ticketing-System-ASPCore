@@ -1,4 +1,4 @@
-﻿namespace College.BL
+﻿namespace BugTicketingSystem.BL
 {
     public class GeneralResult
     {

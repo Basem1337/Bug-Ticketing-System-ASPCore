@@ -1,5 +1,4 @@
 ﻿using BugTicketingSystem.DAL;
-using College.BL;
 
 namespace BugTicketingSystem.BL
 {

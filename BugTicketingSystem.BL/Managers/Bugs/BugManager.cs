@@ -1,18 +1,35 @@
 ﻿using BugTicketingSystem.DAL;
-using College.BL;
+using BugTrackingSystem.BL;
+using FluentValidation;
 
 namespace BugTicketingSystem.BL
 {
     public class BugManager : IBugManager
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly BugAddDtoValidator _validationRules;
 
-        public BugManager(IUnitOfWork unitOfWork)
+        public BugManager(IUnitOfWork unitOfWork,BugAddDtoValidator validationRules)
         {
             _unitOfWork = unitOfWork;
+            _validationRules = validationRules;
         }
         public async Task<GeneralResult> AddAsync(BugAddDTO BugDTO)
         {
+            var validationResult = await _validationRules.ValidateAsync(BugDTO);
+            if (!(validationResult.IsValid))
+            {
+                return new GeneralResult
+                {
+                    Success = false,
+                    Errors = validationResult.Errors.Select(e => new ResultError
+                    {
+                        Code = e.ErrorCode,
+                        Msg = e.ErrorMessage
+                    }).ToArray()
+                };
+            }
+
             var newBug = new Bug()
             {
                 Name = BugDTO.Name,

@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using BugTicketingSystem.BL;
+using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BugTicketingSystem.BL
 {
@@ -11,8 +13,9 @@ namespace BugTicketingSystem.BL
             services.AddScoped<IProjectManager, ProjectManager>();
             services.AddScoped<IAttachmentManager, AttachmentManager>();
             services.AddScoped<IUserBugManager, UserBugManager>();
+            services.AddScoped<IAuthManager, AuthManager>();
 
-            //services.AddValidatorsFromAssembly(typeof(BusinessExtension).Assembly);
+            services.AddValidatorsFromAssembly(typeof(BusinessExtension).Assembly);
         }
     }
 }

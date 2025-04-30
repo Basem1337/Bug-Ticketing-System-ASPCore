@@ -1,7 +1,6 @@
 ﻿using Azure.Core;
 using System;
 using BugTicketingSystem.DAL;
-using College.BL;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 using BugTrackingSystem.BL;
 using System.Net.Mail;
@@ -21,11 +20,19 @@ namespace BugTicketingSystem.BL
 
         public async Task<GeneralResult> AddAsync(Guid bugId,AttachmentAddDTO attDTO)
         {
-            //var validationResult = await _validationRules.ValidateAsync(attDTO);
-            //if (!validationResult.IsValid)
-            //{
-            //    return validationResult.MapErrorToGeneralResult();
-            //}
+            var validationResult = await _validationRules.ValidateAsync(attDTO);
+            if (!(validationResult.IsValid))
+            {
+                return new GeneralResult
+                {
+                    Success = false,
+                    Errors = validationResult.Errors.Select(e => new ResultError
+                    {
+                        Code = e.ErrorCode,
+                        Msg = e.ErrorMessage
+                    }).ToArray()
+                };
+            }
             var bug = await _unitOfWork.BugRepository
                 .getByIdAsync(bugId);
             if (bug == null)
@@ -33,7 +40,7 @@ namespace BugTicketingSystem.BL
                 return new GeneralResult
                 {
                     Success = false,
-                    Errors = []
+                    Errors = [new ResultError() { Msg = "Bug Not Found!"}]
                 };
             }
             var fileName = Guid.NewGuid() + Path.GetExtension(attDTO.File.FileName);
@@ -83,15 +90,17 @@ namespace BugTicketingSystem.BL
                 return new GeneralResult
                 {
                     Success = false,
-                    Errors = []
+                    Errors = [new ResultError() { Msg = "Attachment Not Found!" }]
                 };
             }
+
             var attachmentDtos = attachments.Select(a => new AttachmentReadDTO
             {
                 Id = a.Id,
                 Name = a.Name,
                 FilePath = $"http://localhost:5279{a.FileUrl}"
             }).ToList();
+
             return new GeneralResult<List<AttachmentReadDTO>>
             {
                 Success = true,
@@ -107,7 +116,7 @@ namespace BugTicketingSystem.BL
                 return new GeneralResult
                 {
                     Success = false,
-                    Errors = []
+                    Errors = [new ResultError() { Msg = "Bug Not Found!" }]
                 };
             }
 
@@ -117,7 +126,7 @@ namespace BugTicketingSystem.BL
                 return new GeneralResult
                 {
                     Success = false,
-                    Errors = []
+                    Errors = [new ResultError() { Msg = "Attachment Not Found!" }]
                 };
             }
 

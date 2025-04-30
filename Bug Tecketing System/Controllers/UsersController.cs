@@ -1,4 +1,7 @@
-﻿using BugTicketingSystem.BL;
+﻿using System.Security.Claims;
+using BugTicketingSystem.BL;
+using BugTicketingSystem.DAL;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
@@ -11,10 +14,12 @@ namespace Bug_Tecketing_System.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserManager _userManager;
+        private readonly IAuthManager _authManager;
 
-        public UsersController(IUserManager userManager)
+        public UsersController(IUserManager userManager, IAuthManager authManager)
         {
             _userManager = userManager;
+            _authManager = authManager;
         }
 
         [HttpGet]
@@ -29,7 +34,7 @@ namespace Bug_Tecketing_System.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult> Add(UserRegisterDTO user)
+        public async Task<IActionResult> Register(UserRegisterDTO user)
         {
             var res = await _userManager.AddAsync(user);
             if (res.Success)
@@ -39,11 +44,69 @@ namespace Bug_Tecketing_System.Controllers
             return BadRequest(res);
         }
 
-        //[HttpPost("login")]
-        //public async Task<ActionResult> Add(UserLoginInfo user)
-        //{
-            
-        //}
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] UserLoginDTO dto)
+        {
+            var token = await _authManager.LoginAsync(dto);
+            if (token == null)
+                return Unauthorized("Invalid credentials");
+
+            return Ok(new { Token = token });
+        }
+
+        [HttpPut("for-manager/{id}")]
+        public async Task<IActionResult> ManagerUpdate(Guid id, [FromBody] UserManagerUpdateDTO user)
+        {
+            if (id != user.Id)
+            {
+                return BadRequest("User ID mismatch");
+            }
+            var res = await _userManager.ManagerUpdateAsync(user);
+            if (res.Success)
+            {
+                return Ok(res);
+            }
+            return BadRequest(res);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UserUpdate(Guid id, [FromBody] UserUpdateDTO user)
+        {
+            if (id != user.Id)
+            {
+                return BadRequest("User ID mismatch");
+            }
+            var res = await _userManager.UpdateAsync(user);
+            if (res.Success)
+            {
+                return Ok(res);
+            }
+            return BadRequest(res);
+        }
+
+        [HttpGet("for-manager")]
+        [Authorize(Policy = Constants.Policies.ForManagerOnly)]
+        public async Task<ActionResult<IEnumerable<string>>> GetForManager()
+        {
+            var result = await _userManager.GetManagerDataAsync(User);
+            return Ok(result);
+        }
+
+        [HttpGet("for-testing")]
+        [Authorize(Policy = Constants.Policies.ForTestingOnly)]
+        public async Task<ActionResult<IEnumerable<string>>> GetForTesting()
+        {
+            var result = await _userManager.GetTestingDataAsync(User);
+            return Ok(result);
+        }
+
+        [HttpGet("for-developing")]
+        [Authorize(Policy = Constants.Policies.ForDevelopingOnly)]
+        public async Task<ActionResult<IEnumerable<string>>> GetForDeveloping()
+        {
+            var result = await _userManager.GetDevelopingDataAsync(User);
+            return Ok(result);
+        }
 
     }
 }

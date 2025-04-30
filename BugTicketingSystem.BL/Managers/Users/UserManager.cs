@@ -1,24 +1,44 @@
-﻿using BugTicketingSystem.DAL;
-using College.BL;
+﻿using System.Security.Claims;
+using BugTicketingSystem.BL.Helpers;
+using BugTicketingSystem.DAL;
+using BugTrackingSystem.BL;
+using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 
 namespace BugTicketingSystem.BL
 {
     public class UserManager : IUserManager
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly RegisterDtoValidator _validationRules;
 
-        public UserManager(IUnitOfWork unitOfWork)
+        public UserManager(IUnitOfWork unitOfWork, RegisterDtoValidator validationRules)
         {
             _unitOfWork = unitOfWork;
+            _validationRules = validationRules;
         }
         public async Task<GeneralResult> AddAsync(UserRegisterDTO userDTO)
         {
+            var validationResult = await _validationRules.ValidateAsync(userDTO);
+            if (!(validationResult.IsValid))
+            {
+                return new GeneralResult
+                {
+                    Success = false,
+                    Errors = validationResult.Errors.Select(e => new ResultError
+                    {
+                        Code = e.ErrorCode,
+                        Msg = e.ErrorMessage
+                    }).ToArray()
+                };
+            }
+
             var newUser = new User()
             {
                 Name = userDTO.Name,
                 Age = userDTO.Age,
                 Email = userDTO.Email,
-                Password = userDTO.Password
+                Password = PasswordHelper.HashPassword(userDTO.Password)
             };
 
             _unitOfWork.UserRepository.Add(newUser);
@@ -31,14 +51,24 @@ namespace BugTicketingSystem.BL
             };
         }
 
-        public async Task DeleteAsync(User userDTO)
+        public async Task<GeneralResult> DeleteAsync(User userDTO)
         {
             var delUser = await _unitOfWork.UserRepository.getByIdAsync(userDTO.Id);
-            if (delUser != null)
+            if (delUser == null)
             {
-                _unitOfWork.UserRepository.Delete(userDTO);
-                await _unitOfWork.SaveChangesAsync();
+                return new GeneralResult
+                {
+                    Success = false,
+                    Errors = [new ResultError() { Msg = "User Not Found!" }]
+                };
             }
+            _unitOfWork.UserRepository.Delete(userDTO);
+            await _unitOfWork.SaveChangesAsync();
+            return new GeneralResult
+            {
+                Success = true,
+                Errors = []
+            };
         }
 
         public async Task<List<UserReadDTO>> GetAllAsync()
@@ -54,13 +84,90 @@ namespace BugTicketingSystem.BL
             }).ToList();
         }
 
-        public async Task ManagerUpdateAsync(UserManagerUpdateDTO userDTO)
+        public async Task<UserReadDTO> GetByIdAsync(Guid id)
+        {
+            var getUser = await _unitOfWork.UserRepository.getByIdAsync(id);
+
+            var user = new UserReadDTO
+            {
+                Id = getUser.Id,
+                Name = getUser.Name,
+                Email = getUser.Email,
+                Role = getUser.Role
+            };
+
+            return user;
+        }
+
+        public async Task<IEnumerable<string>> GetManagerDataAsync(ClaimsPrincipal userClaims)
+        {
+            var userIdString = userClaims.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userIdString))
+                throw new UnauthorizedAccessException("User ID not found.");
+
+            if (!Guid.TryParse(userIdString, out Guid userId))
+            {
+                throw new UnauthorizedAccessException("Invalid User ID format.");
+            }
+
+            var user = await _unitOfWork.UserRepository.getByIdAsync(userId);
+            if (user == null)
+                throw new Exception("User not found.");
+
+            return new[] { "Manager-Only Data 1", "Manager-Only Data 2" };
+        }
+
+
+        public async Task<IEnumerable<string>> GetTestingDataAsync(ClaimsPrincipal userClaims)
+        {
+            var userIdString = userClaims.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userIdString))
+                throw new UnauthorizedAccessException("User ID not found.");
+
+            if (!Guid.TryParse(userIdString, out Guid userId))
+            {
+                throw new UnauthorizedAccessException("Invalid User ID format.");
+            }
+
+            var user = await _unitOfWork.UserRepository.getByIdAsync(userId);
+            if (user == null)
+                throw new Exception("User not found.");
+
+            return new[] { "Testing-Only Data 1", "Testing-Only Data 2" };
+        }
+
+        public async Task<IEnumerable<string>> GetDevelopingDataAsync(ClaimsPrincipal userClaims)
+        {
+            var userIdString = userClaims.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userIdString))
+                throw new UnauthorizedAccessException("User ID not found.");
+
+            if (!Guid.TryParse(userIdString, out Guid userId))
+            {
+                throw new UnauthorizedAccessException("Invalid User ID format.");
+            }
+
+            var user = await _unitOfWork.UserRepository.getByIdAsync(userId);
+            if (user == null)
+                throw new Exception("User not found.");
+
+            return new[] { "Developing-Only Data 1", "Developing-Only Data 2" };
+        }
+
+        public async Task<GeneralResult> ManagerUpdateAsync(UserManagerUpdateDTO userDTO)
         {
             var updateUser = await _unitOfWork.UserRepository.getByIdAsync(userDTO.Id);
 
             if (updateUser is null)
             {
-                return;
+                return new GeneralResult
+                {
+                    Success = false,
+                    Errors = [new ResultError() { Msg = "User Not Found!" }]
+                };
             }
             else
             {
@@ -73,27 +180,57 @@ namespace BugTicketingSystem.BL
                 _unitOfWork.UserRepository.Update(updateUser);
 
                 await _unitOfWork.SaveChangesAsync();
+
+                return new GeneralResult
+                {
+                    Success = true,
+                    Errors = []
+                };
             }
         }
 
-        public async Task UpdateAsync(UserUpdateDTO userDTO)
+        public async Task<GeneralResult> UpdateAsync(UserUpdateDTO userDTO)
         {
+            //var validationResult = await _validationRules.ValidateAsync(userDTO);
+            //if (!(validationResult.IsValid))
+            //{
+            //    return new GeneralResult
+            //    {
+            //        Success = false,
+            //        Errors = validationResult.Errors.Select(e => new ResultError
+            //        {
+            //            Code = e.ErrorCode,
+            //            Msg = e.ErrorMessage
+            //        }).ToArray()
+            //    };
+            //}
+
             var updateUser = await _unitOfWork.UserRepository.getByIdAsync(userDTO.Id);
 
             if (updateUser is null)
             {
-                return;
+                return new GeneralResult
+                {
+                    Success = false,
+                    Errors = [new ResultError() { Msg = "User Not Found!" }]
+                };
             }
             else
             {
                 updateUser.Name = userDTO.Name;
                 updateUser.Email = userDTO.Email;
                 updateUser.Age = userDTO.Age;
-                updateUser.Password = userDTO.Password;
+                updateUser.Password = PasswordHelper.HashPassword(userDTO.Password);
 
                 _unitOfWork.UserRepository.Update(updateUser);
 
                 await _unitOfWork.SaveChangesAsync();
+
+                return new GeneralResult
+                {
+                    Success = true,
+                    Errors = []
+                };
             }
         }
     }
